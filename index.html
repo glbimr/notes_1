@@ -10,6 +10,9 @@
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        /* Global fixes for responsive fitting */
+        * { box-sizing: border-box; }
+        html, body { width: 100%; overflow-x: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; color: #1F2937; }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; max-height: 400px; }
         .interactive-card { transition: all 0.3s ease; cursor: pointer; }
@@ -40,29 +43,35 @@
 
         .comp-btn { transition: transform 0.2s; }
         .comp-btn:hover { transform: scale(1.05); }
-        /* Responsive adjustments for phones/tablets */
+        /* Responsive adjustments added: mobile/tablet/desktop tweaks */
+        @media (max-width: 1024px) {
+            .chart-container { height: 300px; }
+        }
         @media (max-width: 640px) {
-            .node-icon { font-size: 1.6rem; padding: 0.6rem; }
-            .node-icon.text-2xl { font-size: 1.4rem; padding: 0.75rem; }
-            .data-packet { width: 32px; height: 32px; font-size: 1rem; top: 40%; }
-            .connection-line { height: 2px; }
-            .db-line { width: 2px; }
-            .chart-container { height: 260px; }
-            .step-arrow::after { right: 50%; top: auto; bottom: -20px; transform: translateX(50%); content: '↓'; }
+            .chart-container { height: 220px; }
+            .node-icon { font-size: 1.6rem; padding: 0.8rem; }
+            .node-icon p { font-size: 0.9rem; }
+            .data-packet { width: 34px; height: 34px; font-size: 1rem; top: 40%; }
+            .connection-line, .db-line { display: none; }
+            .visual-pipeline .relative.w-full.h-full.flex.flex-col { flex-direction: column; }
+            .visual-pipeline .flex.justify-between.items-center { flex-direction: column; gap: 1.5rem; align-items: center; }
+            .visual-pipeline .h-1\/3 { height: auto; }
+            nav .max-w-7xl { padding-left: 1rem; padding-right: 1rem; }
+            /* Ensure pipeline container uses auto height on mobile */
+            .visual-pipeline { min-height: auto !important; height: auto !important; padding-bottom: 2.5rem; }
+            .visual-pipeline .relative.w-full.h-full.flex.flex-col { height: auto !important; }
+            /* Center the data packet on mobile and animate vertically */
+            .visual-pipeline #data-packet { left: 50% !important; transform: translateX(-50%) !important; top: 18% !important; }
+            /* Reduce hero paddings for small devices */
+            .max-w-7xl.mx-auto.px-4.sm\:px-6.lg\:px-8.py-16.sm\:py-24.text-center { padding-top: 3rem; padding-bottom: 3rem; }
         }
-
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .node-icon { font-size: 2rem; padding: 1rem; }
-            .data-packet { width: 36px; height: 36px; font-size: 1.1rem; top: 36%; }
-            .chart-container { height: 340px; }
+        @media (min-width: 1025px) {
+            .mobile-only { display: none !important; }
         }
-        /* Wrapper for forced-desktop scaling (auto-fit on small viewports) */
-        #desktop-wrapper { width: 1200px; max-width: 1200px; margin: 0 auto; transition: transform 150ms ease; }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Corporate Blue (Slate-50 BG, Indigo-600 Action, Emerald-500 Success) -->
 </head>
 <body class="antialiased">
-    <div id="desktop-wrapper">
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
@@ -70,14 +79,6 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-indigo-700">Unit - 1<span class="text-gray-900"></span></span>
-                </div>
-                <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden">
-                    <button id="mobile-menu-button" aria-expanded="false" class="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <button onclick="scrollToSection('dik-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Concepts</button>
@@ -87,16 +88,6 @@
                     <!-- NEW QUIZ NAVIGATION LINK -->
                     <button onclick="scrollToSection('quiz-section')" class="text-sm font-medium text-gray-700 hover:text-green-600 transition font-bold">Quiz</button>
                 </div>
-            </div>
-        </div>
-        <!-- Mobile menu (hidden by default) -->
-        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-100">
-            <div class="px-4 py-3 space-y-1">
-                <button onclick="scrollToSection('dik-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Concepts</button>
-                <button onclick="scrollToSection('components-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Components</button>
-                <button onclick="scrollToSection('management-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Management</button>
-                <button onclick="scrollToSection('enterprise-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Enterprise</button>
-                <button onclick="scrollToSection('quiz-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-indigo-700 font-bold hover:bg-gray-50">Quiz</button>
             </div>
         </div>
     </nav>
@@ -234,7 +225,7 @@
                 </div>
 
                 <!-- Visual Pipeline Stage -->
-                <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 relative h-[380px] sm:h-[420px] lg:h-[450px] overflow-hidden flex flex-col shadow-2xl">
+                    <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 relative min-h-[360px] overflow-hidden flex flex-col shadow-2xl visual-pipeline">
                     <div class="absolute top-4 right-4 text-slate-500 text-xs font-mono">SYSTEM_VISUALIZER_v2.0</div>
                     
                     <!-- Data Packet -->
@@ -312,7 +303,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-3xl font-extrabold text-gray-900">3. The 5 Components</h2>
+                        <h2 class="text-3xl font-extrabold text-gray-900">3. Components of Information Systems</h2>
                         <button onclick="resetComponentDetails()" class="px-5 py-2 text-sm bg-gray-300 rounded-md hover:bg-gray-400 transition font-semibold">Reset View</button>
                     </div>
                     <p class="mt-4 text-gray-600">
@@ -377,8 +368,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Plotly Chart -->
-                <div class="bg-gray-50 rounded-xl p-4 shadow-inner h-64 md:h-96">
-                    <div id="managementPyramid" style="width:100%; height:100%;"></div>
+                <div class="bg-gray-50 rounded-xl p-4 shadow-inner">
+                    <div id="managementPyramid" style="width:100%; height:400px;"></div>
                 </div>
 
                 <!-- Contextual Details -->
@@ -615,6 +606,24 @@
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Mobile menu toggle for small screens
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btnOpen = document.getElementById('mobile-menu-open');
+            const btnClose = document.getElementById('mobile-menu-close');
+            if (!menu) return;
+            const isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                btnOpen.classList.add('hidden');
+                btnClose.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+                btnOpen.classList.remove('hidden');
+                btnClose.classList.add('hidden');
+            }
+        }
+
         // --- DIK Logic ---
         const dikData = {
             data: {
@@ -665,10 +674,17 @@
                 // Step 1: Input to Process
                 packet.style.opacity = '1';
                 packet.innerText = "🥤";
-                packet.style.left = "10%"; // Start at Input
-                
-                // Animate to Step 2 position
-                setTimeout(() => { packet.style.left = "50%"; }, 100);
+                if (window.innerWidth <= 640) {
+                    // Mobile: animate vertically (top) and keep centered
+                    packet.style.left = "50%";
+                    packet.style.transform = "translateX(-50%)";
+                    packet.style.top = "18%";
+                    setTimeout(() => { packet.style.top = "50%"; }, 100);
+                } else {
+                    packet.style.left = "10%"; // Start at Input
+                    // Animate to Step 2 position
+                    setTimeout(() => { packet.style.left = "50%"; }, 100);
+                }
                 
                 nodeInput.classList.add('node-active');
                 
@@ -705,7 +721,16 @@
 
             } else if (step === 3 && simStep >= 2) {
                 // Step 3: Output
-                packet.style.left = "90%"; // Move to Output
+                if (window.innerWidth <= 640) {
+                    packet.style.top = "82%";
+                } else {
+                    // clamp to avoid overflowing the container on smaller viewports
+                    try {
+                        packet.style.left = 'calc(100% - 60px)';
+                    } catch(e) {
+                        packet.style.left = "90%";
+                    }
+                }
                 nodeOutput.classList.add('node-active');
                 
                 feedback.innerText = "Complete! Receipt Printed & Inventory Updated.";
@@ -722,7 +747,15 @@
             
             // Reset Visuals
             const packet = document.getElementById('data-packet');
-            packet.style.left = "10%";
+            // Reset packet to start position (center on mobile)
+            if (window.innerWidth <= 640) {
+                packet.style.left = "50%";
+                packet.style.transform = "translateX(-50%)";
+                packet.style.top = "18%";
+            } else {
+                packet.style.left = "10%";
+                packet.style.top = "35%";
+            }
             packet.style.opacity = "0";
             packet.innerText = "🥤";
 
@@ -804,6 +837,19 @@
              // Initial setup calls
              highlightMgmt(2); 
              showEntSystem('erp');
+
+            // Ensure Plotly resizes on window changes (helps mobile)
+            window.addEventListener('resize', function(){
+                try { Plotly.Plots.resize(document.getElementById('managementPyramid')); } catch(e){}
+            });
+
+            // Place data-packet appropriately on load for small screens
+            const packet = document.getElementById('data-packet');
+            if (packet && window.innerWidth <= 640) {
+                packet.style.left = '50%';
+                packet.style.transform = 'translateX(-50%)';
+                packet.style.top = '18%';
+            }
         });
 
         function highlightMgmt(index) {
@@ -1100,44 +1146,7 @@
             }
             document.getElementById('result-message').textContent = message;
         }
-        
-        // --- Forced Desktop Auto-Fit (Scale Desktop Layout on Small Screens) ---
-        (function(){
-            const DESKTOP_WIDTH = 1200; // px - target desktop layout width for desktop layout
-
-            function applyDesktopScale(){
-                const wrapper = document.getElementById('desktop-wrapper');
-                if(!wrapper) return;
-
-                const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                const scale = Math.max(Math.min(vw / DESKTOP_WIDTH, 1), 0.35); // clamp scale between 0.35 and 1
-
-                wrapper.style.transform = `scale(${scale})`;
-                wrapper.style.transformOrigin = 'top center';
-                wrapper.style.width = DESKTOP_WIDTH + 'px';
-
-                // Avoid horizontal scrolling when scaled
-                document.documentElement.style.overflowX = 'hidden';
-                document.body.style.overflowX = 'hidden';
-            }
-
-            window.addEventListener('resize', applyDesktopScale);
-            document.addEventListener('DOMContentLoaded', function(){
-                applyDesktopScale();
-
-                // Mobile menu toggle wiring (hamburger)
-                const mobileBtn = document.getElementById('mobile-menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
-                if(mobileBtn && mobileMenu){
-                    mobileBtn.addEventListener('click', function(){
-                        const expanded = mobileBtn.getAttribute('aria-expanded') === 'true';
-                        mobileBtn.setAttribute('aria-expanded', String(!expanded));
-                        mobileMenu.classList.toggle('hidden');
-                    });
-                }
-            });
-        })();
-</script>
-    </div>
+    </script>
 </body>
 </html>
+
