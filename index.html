@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Systems in Business | Interactive Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; color: #1F2937; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; max-height: 400px; }
+        .interactive-card { transition: all 0.3s ease; cursor: pointer; }
+        .interactive-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .step-arrow::after { content: '→'; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: #9CA3AF; }
+        @media (max-width: 768px) { .step-arrow::after { content: '↓'; right: 50%; top: auto; bottom: -25px; transform: translateX(50%); } }
+        .highlight-flow { animation: pulse 2s infinite; border-color: #4F46E5; background-color: #EEF2FF; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); } 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
+        .tab-active { border-bottom: 2px solid #4F46E5; color: #4F46E5; font-weight: 600; }
+        .tab-inactive { color: #6B7280; }
+        .tab-inactive:hover { color: #374151; }
+        .option-button { transition: background-color 0.2s, border-color 0.2s; }
+        .option-button:hover:not(.disabled) { background-color: #F3F4F6; border-color: #C7D2FE; }
+        .correct-answer { background-color: #D1FAE5 !important; border-color: #059669 !important; color: #065F46 !important; }
+        .incorrect-answer { background-color: #FEE2E2 !important; border-color: #EF4444 !important; color: #991B1B !important; }
+        
+        /* New Styles for Visual Pipeline */
+        .node-icon { font-size: 2.5rem; background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 50%; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); border: 2px solid rgba(255,255,255,0.2); position: relative; z-index: 2; }
+        .node-active { background: #4F46E5; border-color: #818CF8; box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); transform: scale(1.1); }
+        .data-packet { 
+            position: absolute; width: 40px; height: 40px; background: #FFF; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; 
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; 
+            box-shadow: 0 0 15px rgba(255,255,255,0.8); opacity: 0; top: 35%; /* Default Top Align */
+        }
+        .connection-line { position: absolute; height: 3px; background: #374151; z-index: 1; top: 50%; transform: translateY(-50%); }
+        .db-line { position: absolute; width: 3px; background: #374151; z-index: 1; left: 50%; transform: translateX(-50%); }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Corporate Blue (Slate-50 BG, Indigo-600 Action, Emerald-500 Success) -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-700">Unit-1<span class="text-gray-900">Hub</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('dik-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Concepts</button>
+                    <button onclick="scrollToSection('components-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Components</button>
+                    <button onclick="scrollToSection('management-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Management</button>
+                    <button onclick="scrollToSection('enterprise-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Enterprise</button>
+                    <!-- NEW QUIZ NAVIGATION LINK -->
+                    <button onclick="scrollToSection('quiz-section')" class="text-sm font-medium text-gray-700 hover:text-green-600 transition font-bold">Quiz</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+                Introduction to <span class="text-indigo-600">Information Systems</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                Explore how businesses turn raw data into strategic power. From scanning a barcode to global decision-making.
+            </p>
+            <div class="mt-8">
+                <button onclick="scrollToSection('dik-section')" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    Start Learning
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: The Hierarchy of Value (DIK) -->
+    <section id="dik-section" class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">1. From Data to Knowledge</h2>
+                <p class="mt-4 text-lg text-gray-500">
+                    Understanding the fundamental building blocks of any information system. Click the cards below to see the transformation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Data Card -->
+                <div onclick="updateDikContext('data')" class="interactive-card bg-white overflow-hidden shadow rounded-lg p-6 border-l-4 border-gray-300 hover:border-indigo-500 step-arrow relative">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-gray-100 rounded-md p-3">
+                            <span class="text-2xl">📊</span>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">Data</h3>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Raw, unorganized facts.</p>
+                    <div class="mt-4 bg-gray-50 p-2 rounded text-xs font-mono text-gray-600">
+                        Example: "50", "Banana", "10/01/2024"
+                    </div>
+                </div>
+
+                <!-- Information Card -->
+                <div onclick="updateDikContext('info')" class="interactive-card bg-white overflow-hidden shadow rounded-lg p-6 border-l-4 border-blue-300 hover:border-blue-500 step-arrow relative">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                            <span class="text-2xl">📝</span>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">Information</h3>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Processed data with context.</p>
+                    <div class="mt-4 bg-blue-50 p-2 rounded text-xs font-mono text-blue-800">
+                        Example: "Sold 50 bananas on 10/01/2024."
+                    </div>
+                </div>
+
+                <!-- Knowledge Card -->
+                <div onclick="updateDikContext('knowledge')" class="interactive-card bg-white overflow-hidden shadow rounded-lg p-6 border-l-4 border-indigo-300 hover:border-indigo-600">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-indigo-100 rounded-md p-3">
+                            <span class="text-2xl">💡</span>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-gray-900">Knowledge</h3>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Actionable understanding.</p>
+                    <div class="mt-4 bg-indigo-50 p-2 rounded text-xs font-mono text-indigo-800">
+                        Action: "Order 50 bananas every Tuesday."
+                    </div>
+                </div>
+            </div>
+
+            <div id="dik-explanation" class="mt-10 bg-white p-6 rounded-lg shadow-sm border border-gray-200 transition-all duration-300">
+                <h4 class="text-lg font-bold text-gray-900 mb-2">Select a stage above</h4>
+                <p class="text-gray-600">Click on Data, Information, or Knowledge to see how value is added at each step of the business process.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: What is an Information System? (Starbucks Case) -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10">
+                <h2 class="text-3xl font-extrabold text-gray-900">2. Anatomy of an IS: The Starbucks Data Flow</h2>
+                <p class="mt-4 text-lg text-gray-500">
+                    An Information System collects, processes, stores, and distributes information. 
+                    <span class="text-indigo-600 font-semibold">Click the buttons below to visualize the data lifecycle.</span>
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <!-- Simulator Controls -->
+                <div class="lg:col-span-1 bg-gray-50 rounded-xl p-6 border border-gray-200 h-full flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Control Panel</h3>
+                        <div class="space-y-4">
+                            <button id="btn-input" onclick="runISStep(1)" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition flex justify-between items-center group shadow-sm">
+                                <div>
+                                    <span class="block font-semibold text-gray-800">1. Input</span>
+                                    <span class="text-xs text-gray-500">Scan Barcode</span>
+                                </div>
+                                <span class="text-xl">📷</span>
+                            </button>
+                            
+                            <button id="btn-process" onclick="runISStep(2)" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition flex justify-between items-center group opacity-50 cursor-not-allowed shadow-sm" disabled>
+                                <div>
+                                    <span class="block font-semibold text-gray-800">2. Process</span>
+                                    <span class="text-xs text-gray-500">Compute Total</span>
+                                </div>
+                                <span class="text-xl">⚙️</span>
+                            </button>
+                            
+                            <button id="btn-output" onclick="runISStep(3)" class="w-full text-left px-4 py-3 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition flex justify-between items-center group opacity-50 cursor-not-allowed shadow-sm" disabled>
+                                <div>
+                                    <span class="block font-semibold text-gray-800">3. Output</span>
+                                    <span class="text-xs text-gray-500">Print Receipt</span>
+                                </div>
+                                <span class="text-xl">🧾</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Reset Button -->
+                    <button onclick="resetISSim()" class="w-full text-center px-5 py-3 bg-white border border-red-200 text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition mt-6 text-sm font-semibold">
+                        Reset Simulation
+                    </button>
+                </div>
+
+                <!-- Visual Pipeline Stage -->
+                <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 relative h-[450px] overflow-hidden flex flex-col shadow-2xl">
+                    <div class="absolute top-4 right-4 text-slate-500 text-xs font-mono">SYSTEM_VISUALIZER_v2.0</div>
+                    
+                    <!-- Data Packet -->
+                    <div id="data-packet" class="data-packet" style="left: 10%; top: 35%;">🥤</div>
+
+                    <!-- Pipeline Layout -->
+                    <div class="relative w-full h-full flex flex-col">
+                        
+                        <!-- Top Row: Input -> Process -> Output -->
+                        <div class="flex justify-between items-center w-full h-2/3 px-8 relative z-0">
+                            <!-- Connection Lines -->
+                            <div class="connection-line" style="left: 10%; width: 40%;"></div>
+                            <div class="connection-line" style="left: 50%; width: 40%;"></div>
+
+                            <!-- Input Node -->
+                            <div class="flex flex-col items-center relative z-10">
+                                <div id="node-input" class="node-icon text-white">📷</div>
+                                <div class="mt-3 text-slate-400 font-mono text-sm">Input</div>
+                            </div>
+
+                            <!-- Process Node -->
+                            <div class="flex flex-col items-center relative z-10">
+                                <div id="node-process" class="node-icon text-white">⚙️</div>
+                                <div class="mt-3 text-slate-400 font-mono text-sm">Process</div>
+                            </div>
+
+                            <!-- Output Node -->
+                            <div class="flex flex-col items-center relative z-10">
+                                <div id="node-output" class="node-icon text-white">🧾</div>
+                                <div class="mt-3 text-slate-400 font-mono text-sm">Output</div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Row: Database (Centered under Process) -->
+                        <div class="h-1/3 w-full relative flex justify-center items-start z-0">
+                            <!-- Vertical Line to DB -->
+                            <div class="db-line" style="height: 50px; top: -50px;"></div>
+                            
+                            <!-- DB Node -->
+                            <div class="flex flex-col items-center relative z-10 -mt-2">
+                                <div id="node-db" class="node-icon text-white text-2xl p-4">🗄️</div>
+                                <div class="mt-2 text-slate-400 font-mono text-sm">Database</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feedback Text Overlay -->
+                    <div id="sim-feedback" class="absolute bottom-4 left-0 w-full text-center text-indigo-300 font-mono text-sm opacity-0 transition-opacity duration-300">
+                        Waiting for input...
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                    <h4 class="font-bold text-indigo-900">Global Reach</h4>
+                    <p class="text-sm text-indigo-700 mt-1">Like eBay, IS allows 24/7 cross-border operations.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                    <h4 class="font-bold text-indigo-900">Market Intelligence</h4>
+                    <p class="text-sm text-indigo-700 mt-1">Real-time tracking of costs and competitors globally.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                    <h4 class="font-bold text-indigo-900">Coordination</h4>
+                    <p class="text-sm text-indigo-700 mt-1">Standardized reporting across branches (e.g., Zara).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Components of IS (Chart.js) -->
+    <section id="components-section" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-3xl font-extrabold text-gray-900">3. The 5 Components</h2>
+                        <button onclick="resetComponentDetails()" class="px-5 py-2 text-sm bg-gray-300 rounded-md hover:bg-gray-400 transition font-semibold">Reset View</button>
+                    </div>
+                    <p class="mt-4 text-gray-600">
+                        An IS is a socio-technical system. It's not just computers; it's people and processes too.
+                    </p>
+                    <p class="mt-4 text-sm font-semibold text-indigo-600">Click on the chart segments to explore each component.</p>
+                    
+                    <div id="component-detail" class="mt-8 p-6 bg-white rounded-lg shadow border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800" id="comp-title">Hardware</h3>
+                        <p class="mt-2 text-gray-600" id="comp-desc">Physical equipment used for input, processing, and output.</p>
+                        <p class="mt-3 text-xs font-mono text-gray-500 bg-gray-100 p-2 rounded" id="comp-ex">Example: Servers, Mobile Devices, Scanners.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 flex items-center justify-center bg-white rounded-xl shadow p-4">
+                    <div class="chart-container">
+                        <canvas id="componentsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Management Levels (Plotly) -->
+    <section id="management-section" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-gray-900">4. Systems for Management Groups</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+                    Different levels of management require different types of information systems to make decisions.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Plotly Chart -->
+                <div class="bg-gray-50 rounded-xl p-4 shadow-inner">
+                    <div id="managementPyramid" style="width:100%; height:400px;"></div>
+                </div>
+
+                <!-- Contextual Details -->
+                <div class="flex flex-col justify-center space-y-6">
+                    <div id="mgmt-detail-senior" class="p-4 rounded-lg border-l-4 border-transparent hover:bg-gray-50 transition opacity-50">
+                        <h4 class="text-lg font-bold text-gray-900">Senior Management (Strategic)</h4>
+                        <p class="text-sm text-gray-600">Focus: Long-term planning, unstructured problems.</p>
+                        <span class="inline-block mt-2 px-2 py-1 text-xs font-semibold text-purple-800 bg-purple-100 rounded">System: ESS (Executive Support Systems)</span>
+                    </div>
+
+                    <div id="mgmt-detail-middle" class="p-4 rounded-lg border-l-4 border-transparent hover:bg-gray-50 transition opacity-50">
+                        <h4 class="text-lg font-bold text-gray-900">Middle Management (Tactical)</h4>
+                        <p class="text-sm text-gray-600">Focus: Monitoring, control, semi-structured decisions.</p>
+                        <span class="inline-block mt-2 px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded">System: MIS & DSS</span>
+                        <div class="mt-2 text-xs text-gray-500 italic">Example: Airline Pricing DSS (Analyzing competitor prices & history).</div>
+                    </div>
+
+                    <div id="mgmt-detail-ops" class="p-4 rounded-lg border-l-4 border-transparent hover:bg-gray-50 transition opacity-100 border-indigo-500 bg-indigo-50">
+                        <h4 class="text-lg font-bold text-gray-900">Operational Management (Day-to-day)</h4>
+                        <p class="text-sm text-gray-600">Focus: Routine, specific transactions.</p>
+                        <span class="inline-block mt-2 px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">System: TPS (Transaction Processing System)</span>
+                        <div class="mt-2 text-xs text-gray-500 italic">Example: Retail Inventory (Recording shirt sales).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Enterprise Applications (Interactive Flow) -->
+    <section id="enterprise-section" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900">5. Linking the Enterprise</h2>
+                <p class="mt-4 text-lg text-gray-500">
+                    How separate departments become a unified organism through Enterprise Applications.
+                </p>
+            </div>
+
+            <!-- Tabs and Reset -->
+            <div class="flex justify-between items-center mb-8 border-b border-gray-200">
+                <div class="flex space-x-6">
+                    <button onclick="showEntSystem('erp')" id="tab-erp" class="tab-active pb-3 text-lg focus:outline-none">ERP (Internal)</button>
+                    <button onclick="showEntSystem('scm')" id="tab-scm" class="tab-inactive pb-3 text-lg focus:outline-none">SCM (Suppliers)</button>
+                    <button onclick="showEntSystem('crm')" id="tab-crm" class="tab-inactive pb-3 text-lg focus:outline-none">CRM (Customers)</button>
+                </div>
+                <button onclick="showEntSystem('erp')" class="px-5 py-2 text-sm bg-gray-300 rounded-md hover:bg-gray-400 transition font-semibold">Reset View</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Diagram Side -->
+                <div class="md:col-span-2 bg-white p-6 rounded-xl shadow relative min-h-[300px] flex items-center justify-center">
+                    <div class="flex items-center space-x-4 w-full justify-between">
+                        <!-- SCM Node -->
+                        <div id="node-scm" class="w-1/3 p-4 bg-gray-100 rounded border-2 border-gray-300 text-center transition-all duration-300 opacity-50">
+                            <div class="text-3xl mb-2">🚚</div>
+                            <h4 class="font-bold text-gray-700">Suppliers (SCM)</h4>
+                            <p class="text-xs text-gray-500 mt-1">Raw Materials & Logistics</p>
+                        </div>
+                        
+                        <!-- Link 1 -->
+                        <div class="text-gray-300 text-2xl">→</div>
+
+                        <!-- ERP Node -->
+                        <div id="node-erp" class="w-1/3 p-4 bg-indigo-50 rounded border-2 border-indigo-500 text-center shadow-lg transition-all duration-300 transform scale-105">
+                            <div class="text-3xl mb-2">🏭</div>
+                            <h4 class="font-bold text-indigo-900">Enterprise (ERP)</h4>
+                            <p class="text-xs text-indigo-600 mt-1">Finance, HR, Manufacturing</p>
+                        </div>
+
+                        <!-- Link 2 -->
+                        <div class="text-gray-300 text-2xl">→</div>
+
+                        <!-- CRM Node -->
+                        <div id="node-crm" class="w-1/3 p-4 bg-gray-100 rounded border-2 border-gray-300 text-center transition-all duration-300 opacity-50">
+                            <div class="text-3xl mb-2">👥</div>
+                            <h4 class="font-bold text-gray-700">Customers (CRM)</h4>
+                            <p class="text-xs text-gray-500 mt-1">Sales, Service, Marketing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Side -->
+                <div class="bg-white p-6 rounded-xl shadow border border-gray-200 flex flex-col justify-center">
+                    <h3 id="ent-title" class="text-xl font-bold text-gray-900">Enterprise Resource Planning (ERP)</h3>
+                    <p id="ent-desc" class="mt-4 text-gray-600">Integrates all key business processes (Finance, HR, Manufacturing) into a single system.</p>
+                    <div class="mt-6">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Real-Life Example</span>
+                        <div id="ent-example" class="mt-2 p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-700">
+                            <strong>Tesla:</strong> Uses ERP to manage everything from ordering battery materials to tracking the final car warranty.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <p class="text-sm text-blue-800 text-center">
+                    <strong>The Power of Integration:</strong> When fully integrated, a sale in CRM triggers the ERP to check inventory, which triggers SCM to order more parts automatically.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: MCQ QUIZ -->
+    <section id="quiz-section" class="py-16 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-gray-900">6. Quick Check Quiz</h2>
+                <p class="mt-4 text-lg text-gray-500">
+                    Test your knowledge on Information Systems concepts. Answer the questions to check your understanding!
+                </p>
+            </div>
+
+            <div id="quiz-container" class="bg-gray-50 p-6 sm:p-8 rounded-xl shadow-xl border border-gray-200">
+                <!-- Quiz Status/Start -->
+                <div id="quiz-start" class="text-center space-y-4">
+                    <h3 class="text-2xl font-semibold text-gray-800">Ready to Test Your IS Knowledge?</h3>
+                    <p class="text-gray-600">This module features 20 comprehensive questions to review the material.</p>
+                    <button onclick="startQuiz()" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
+                        Start Quiz
+                    </button>
+                </div>
+
+                <!-- Question Area -->
+                <div id="quiz-question-area" class="hidden space-y-6">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-300">
+                        <h4 class="text-xl font-bold text-indigo-700" id="quiz-q-number">Question 1 / 20</h4>
+                        <span class="text-lg font-semibold text-gray-600" id="quiz-score">Score: 0</span>
+                    </div>
+
+                    <p class="text-2xl font-medium text-gray-900" id="quiz-q-text"></p>
+
+                    <div id="quiz-options-container" class="space-y-3">
+                        <!-- Option buttons generated here -->
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200 flex justify-between">
+                        <span id="quiz-feedback" class="text-md font-semibold italic"></span>
+                        <button id="quiz-next-btn" onclick="nextQuestion()" disabled class="px-6 py-2 bg-indigo-500 text-white font-semibold rounded-lg opacity-50 cursor-not-allowed hover:bg-indigo-600 transition">
+                            Next Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Area -->
+                <div id="quiz-results" class="hidden text-center space-y-4">
+                    <h3 class="text-3xl font-bold text-gray-800">Quiz Complete! 🎉</h3>
+                    <p class="text-xl text-gray-600">Your final score is:</p>
+                    <p class="text-5xl font-extrabold text-green-600" id="final-score">0 / 20</p>
+                    <p id="result-message" class="text-lg font-medium"></p>
+                    <button onclick="startQuiz()" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition">
+                        Retake Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-2xl font-bold text-indigo-400">Information Systems Review</h2>
+            <p class="mt-4 text-gray-400 max-w-lg mx-auto">
+                IS is about leveraging technology, people, and processes to turn data into competitive advantage.
+            </p>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-sm text-gray-500">
+                Generated from Course Notes: Unit I
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- DIK Logic ---
+        const dikData = {
+            data: {
+                title: "Data: The Raw Material",
+                text: "Data consists of raw, unorganized facts. In our banana example, '50' is just a number. It has no meaning until we know what it refers to.",
+                colorClass: "border-gray-300"
+            },
+            info: {
+                title: "Information: Adding Context",
+                text: "Information is data processed into a meaningful context. Knowing we 'Sold 50 bananas' tells us WHAT happened.",
+                colorClass: "border-blue-300"
+            },
+            knowledge: {
+                title: "Knowledge: Actionable Insight",
+                text: "Knowledge applies experience to information. Knowing bananas spoil means we must order exactly 50 to avoid waste. This tells us HOW to act.",
+                colorClass: "border-indigo-300"
+            }
+        };
+
+        function updateDikContext(stage) {
+            const container = document.getElementById('dik-explanation');
+            const data = dikData[stage];
+            
+            container.innerHTML = `
+                <h4 class="text-lg font-bold text-gray-900 mb-2">${data.title}</h4>
+                <p class="text-gray-600">${data.text}</p>
+            `;
+        }
+
+        // --- Starbucks Simulator Logic (Updated for Visual Pipeline) ---
+        let simStep = 0;
+        
+        function runISStep(step) {
+            const btn1 = document.getElementById('btn-input');
+            const btn2 = document.getElementById('btn-process');
+            const btn3 = document.getElementById('btn-output');
+            
+            const nodeInput = document.getElementById('node-input');
+            const nodeProcess = document.getElementById('node-process');
+            const nodeDb = document.getElementById('node-db');
+            const nodeOutput = document.getElementById('node-output');
+            const packet = document.getElementById('data-packet');
+            const feedback = document.getElementById('sim-feedback');
+
+            feedback.style.opacity = '1';
+
+            if (step === 1) {
+                // Step 1: Input to Process
+                packet.style.opacity = '1';
+                packet.innerText = "🥤";
+                packet.style.left = "10%"; // Start at Input
+                
+                // Animate to Step 2 position
+                setTimeout(() => { packet.style.left = "50%"; }, 100);
+                
+                nodeInput.classList.add('node-active');
+                
+                feedback.innerText = "Scanning Item... Data Packet Created.";
+                feedback.className = "absolute bottom-4 left-0 w-full text-center text-green-300 font-mono text-sm transition-opacity duration-300";
+
+                // Update Buttons
+                btn1.classList.add('border-indigo-500', 'bg-indigo-50');
+                btn2.disabled = false;
+                btn2.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn2.classList.add('cursor-pointer');
+                simStep = 1;
+
+            } else if (step === 2 && simStep >= 1) {
+                // Step 2: Processing (DB Lookup)
+                nodeProcess.classList.add('node-active');
+                
+                // Visual DB interaction
+                nodeDb.classList.add('node-active');
+                setTimeout(() => nodeDb.classList.remove('node-active'), 800);
+
+                feedback.innerText = "Processing... Checking Price in Database [$4.50]";
+                feedback.className = "absolute bottom-4 left-0 w-full text-center text-yellow-300 font-mono text-sm transition-opacity duration-300";
+
+                // Update Packet to show it's processed (visual change)
+                setTimeout(() => { packet.innerText = "💲"; }, 500);
+
+                // Update Buttons
+                btn2.classList.add('border-indigo-500', 'bg-indigo-50');
+                btn3.disabled = false;
+                btn3.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn3.classList.add('cursor-pointer');
+                simStep = 2;
+
+            } else if (step === 3 && simStep >= 2) {
+                // Step 3: Output
+                packet.style.left = "90%"; // Move to Output
+                nodeOutput.classList.add('node-active');
+                
+                feedback.innerText = "Complete! Receipt Printed & Inventory Updated.";
+                feedback.className = "absolute bottom-4 left-0 w-full text-center text-blue-300 font-mono text-sm transition-opacity duration-300";
+
+                // Update Buttons
+                btn3.classList.add('border-indigo-500', 'bg-indigo-50');
+                simStep = 3;
+            }
+        }
+
+        function resetISSim() {
+            simStep = 0;
+            
+            // Reset Visuals
+            const packet = document.getElementById('data-packet');
+            packet.style.left = "10%";
+            packet.style.opacity = "0";
+            packet.innerText = "🥤";
+
+            ['node-input', 'node-process', 'node-output', 'node-db'].forEach(id => {
+                document.getElementById(id).classList.remove('node-active');
+            });
+            
+            const feedback = document.getElementById('sim-feedback');
+            feedback.innerText = "System Reset. Waiting for input...";
+            feedback.className = "absolute bottom-4 left-0 w-full text-center text-indigo-300 font-mono text-sm opacity-0 transition-opacity duration-300";
+
+            // Reset buttons
+            const btn1 = document.getElementById('btn-input');
+            const btn2 = document.getElementById('btn-process');
+            const btn3 = document.getElementById('btn-output');
+            
+            btn1.classList.remove('border-indigo-500', 'bg-indigo-50');
+            btn2.classList.remove('border-indigo-500', 'bg-indigo-50', 'cursor-pointer');
+            btn3.classList.remove('border-indigo-500', 'bg-indigo-50', 'cursor-pointer');
+            
+            btn2.disabled = true;
+            btn3.disabled = true;
+            btn2.classList.add('opacity-50', 'cursor-not-allowed');
+            btn3.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // --- Chart.js: Components ---
+        const componentData = {
+            'Hardware': { desc: 'Physical equipment (Computers, Scanners, Servers).', ex: 'Example: The scanner used at the checkout.' },
+            'Software': { desc: 'Programmed instructions that control hardware.', ex: 'Example: Windows OS, Excel, CRM Application.' },
+            'Data': { desc: 'The raw facts collected and processed.', ex: 'Example: Customer names, Inventory counts.' },
+            'Procedures': { desc: 'Rules and steps for using the system.', ex: 'Example: Step-by-step guide to return a product.' },
+            'People': { desc: 'Users, operators, and specialists.', ex: 'Example: Accountants, IT Staff, Managers.' }
+        };
+
+        function resetComponentDetails() {
+            // Manually set to initial state (Hardware)
+            document.getElementById('comp-title').innerText = 'Hardware';
+            document.getElementById('comp-desc').innerText = componentData['Hardware'].desc;
+            document.getElementById('comp-ex').innerText = componentData['Hardware'].ex;
+        }
+
+        let myChartInstance;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('componentsChart').getContext('2d');
+            
+            myChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hardware', 'Software', 'Data', 'Procedures', 'People'],
+                    datasets: [{
+                        data: [20, 20, 20, 20, 20],
+                        backgroundColor: [
+                            '#4F46E5', // Indigo
+                            '#3B82F6', // Blue
+                            '#10B981', // Emerald
+                            '#F59E0B', // Amber
+                            '#EF4444'  // Red
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const label = myChartInstance.data.labels[index];
+                            const info = componentData[label];
+                            
+                            document.getElementById('comp-title').innerText = label;
+                            document.getElementById('comp-desc').innerText = info.desc;
+                            document.getElementById('comp-ex').innerText = info.ex;
+                        }
+                    }
+                }
+            });
+
+            // --- Plotly: Management Pyramid ---
+            const funnelData = [{
+                type: 'funnel',
+                y: ['Senior Mgmt', 'Middle Mgmt', 'Operational Mgmt'],
+                x: [20, 60, 100],
+                textinfo: "label",
+                hoverinfo: 'text',
+                text: ['Strategic (ESS)', 'Tactical (MIS/DSS)', 'Routine (TPS)'],
+                marker: {
+                    color: ["#6D28D9", "#2563EB", "#059669"] // Purple, Blue, Green
+                }
+            }];
+
+            const funnelLayout = {
+                margin: {l: 120, r: 20, t: 20, b: 20},
+                paper_bgcolor: "rgba(0,0,0,0)",
+                plot_bgcolor: "rgba(0,0,0,0)",
+                funnelmode: "stack",
+                showlegend: false,
+                height: 380
+            };
+
+            Plotly.newPlot('managementPyramid', funnelData, funnelLayout, {displayModeBar: false});
+            
+            // Plotly Interaction to highlight text sections
+            document.getElementById('managementPyramid').on('plotly_click', function(data){
+                const pointIndex = data.points[0].pointIndex; // 0=Senior, 1=Middle, 2=Ops
+                highlightMgmt(pointIndex);
+            });
+             
+             // Initial setup calls
+             highlightMgmt(2); 
+             showEntSystem('erp');
+        });
+
+        function highlightMgmt(index) {
+            const ids = ['mgmt-detail-senior', 'mgmt-detail-middle', 'mgmt-detail-ops'];
+            ids.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (i === index) {
+                    el.classList.remove('opacity-50', 'border-transparent');
+                    el.classList.add('opacity-100', 'bg-indigo-50', 'border-indigo-500');
+                } else {
+                    el.classList.add('opacity-50', 'border-transparent');
+                    el.classList.remove('opacity-100', 'bg-indigo-50', 'border-indigo-500');
+                }
+            });
+        }
+
+        // --- Enterprise Logic ---
+        const entData = {
+            erp: {
+                title: "Enterprise Resource Planning (ERP)",
+                desc: "Integrates all key business processes (Finance, HR, Manufacturing, Sales) into a single unified software system and database.",
+                ex: "<strong>Tesla:</strong> Uses ERP to manage everything from ordering raw materials to warranty registration.",
+                activeNode: 'node-erp',
+                colorClasses: ['bg-indigo-50', 'border-indigo-500', 'text-indigo-900', 'text-indigo-600']
+            },
+            scm: {
+                title: "Supply Chain Management (SCM)",
+                desc: "Helps manage relationships with suppliers and logistics firms to optimize the flow of goods from sourcing to consumption.",
+                ex: "<strong>Walmart:</strong> Automatically notifies suppliers when products run low on shelves.",
+                activeNode: 'node-scm',
+                colorClasses: ['bg-green-50', 'border-green-500', 'text-green-900', 'text-green-600']
+            },
+            crm: {
+                title: "Customer Relationship Management (CRM)",
+                desc: "Manages all interactions with current and potential customers to increase sales and loyalty.",
+                ex: "<strong>A Bank:</strong> Tracks every call and email to provide personalized service instantly.",
+                activeNode: 'node-crm',
+                colorClasses: ['bg-blue-50', 'border-blue-500', 'text-blue-900', 'text-blue-600']
+            }
+        };
+
+        function showEntSystem(sys) {
+            // Update Tabs
+            ['erp', 'scm', 'crm'].forEach(k => {
+                const btn = document.getElementById(`tab-${k}`);
+                if (k === sys) {
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('tab-inactive');
+                } else {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                }
+            });
+
+            // Update Text
+            const data = entData[sys];
+            document.getElementById('ent-title').innerHTML = data.title;
+            document.getElementById('ent-desc').innerHTML = data.desc;
+            document.getElementById('ent-example').innerHTML = data.ex;
+
+            // Update Diagram Highlights
+            ['node-erp', 'node-scm', 'node-crm'].forEach(id => {
+                const el = document.getElementById(id);
+                const titleEl = el.querySelector('h4');
+                const pEl = el.querySelector('p');
+                const isCurrentNode = id === data.activeNode;
+
+                // Reset classes
+                el.classList.remove('transform', 'scale-105', 'shadow-lg', 'bg-indigo-50', 'border-indigo-500', 'bg-green-50', 'border-green-500', 'bg-blue-50', 'border-blue-500');
+                if (titleEl) titleEl.classList.remove('text-indigo-900', 'text-green-900', 'text-blue-900');
+                if (pEl) pEl.classList.remove('text-indigo-600', 'text-green-600', 'text-blue-600');
+                
+                if (isCurrentNode) {
+                    el.classList.remove('opacity-50', 'border-gray-300', 'bg-gray-100');
+                    el.classList.add('transform', 'scale-105', 'shadow-lg', data.colorClasses[0], data.colorClasses[1]);
+                    if (titleEl) titleEl.classList.add(data.colorClasses[2]);
+                    if (pEl) pEl.classList.add(data.colorClasses[3]);
+
+                } else {
+                    el.classList.add('opacity-50', 'border-gray-300', 'bg-gray-100');
+                    if (titleEl) titleEl.classList.add('text-gray-700');
+                    if (pEl) pEl.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // --- Quiz Logic ---
+        const quizQuestions = [
+            {
+                question: "1. Which of the five components of IS is considered the set of instructions or rules for people?",
+                options: ["A. Software", "B. Hardware", "C. Procedures", "D. Data"],
+                answer: "C. Procedures"
+            },
+            {
+                question: "2. What is processed data that has been organized and presented in a meaningful context?",
+                options: ["A. Data", "B. Knowledge", "C. Wisdom", "D. Information"],
+                answer: "D. Information"
+            },
+            {
+                question: "3. A Transaction Processing System (TPS) primarily supports which level of management?",
+                options: ["A. Senior Management", "B. Operational Management", "C. Middle Management", "D. External Stakeholders"],
+                answer: "B. Operational Management"
+            },
+            {
+                question: "4. Which enterprise application primarily focuses on managing relationships with customers?",
+                options: ["A. SCM", "B. ERP", "C. CRM", "D. MIS"],
+                answer: "C. CRM"
+            },
+            {
+                question: "5. The physical equipment used for input, processing, and output in an IS is classified as:",
+                options: ["A. People", "B. Hardware", "C. Software", "D. Procedures"],
+                answer: "B. Hardware"
+            },
+            {
+                question: "6. Which stage of the DIK hierarchy represents 'actionable understanding' applied to information?",
+                options: ["A. Data", "B. Information", "C. Knowledge", "D. Processing"],
+                answer: "C. Knowledge"
+            },
+            {
+                question: "7. In the socio-technical view of IS, which component includes users and IT specialists?",
+                options: ["A. Procedures", "B. Software", "C. People", "D. Data"],
+                answer: "C. People"
+            },
+            {
+                question: "8. Executive Support Systems (ESS) are designed primarily for which management level?",
+                options: ["A. Operational", "B. Middle", "C. Senior", "D. Technical"],
+                answer: "C. Senior"
+            },
+            {
+                question: "9. Which system helps optimize the flow of goods from sourcing to consumption?",
+                options: ["A. CRM", "B. SCM", "C. ERP", "D. TPS"],
+                answer: "B. SCM"
+            },
+            {
+                question: "10. In the Starbucks simulation, 'Calculating the Bill' is an example of which IS activity?",
+                options: ["A. Input", "B. Output", "C. Processing", "D. Feedback"],
+                answer: "C. Processing"
+            },
+            {
+                question: "11. A system used by middle management to analyze competitor prices for tactical decisions is a(n):",
+                options: ["A. TPS", "B. DSS", "C. ESS", "D. ERP"],
+                answer: "B. DSS"
+            },
+            {
+                question: "12. Which application integrates Finance, HR, and Manufacturing into a single unified system?",
+                options: ["A. SCM", "B. CRM", "C. ERP", "D. MIS"],
+                answer: "C. ERP"
+            },
+            {
+                question: "13. Windows OS and Microsoft Excel are examples of which IS component?",
+                options: ["A. Hardware", "B. Software", "C. Procedures", "D. Data"],
+                answer: "B. Software"
+            },
+            {
+                question: "14. Raw facts like '50' or 'Banana' without context are best described as:",
+                options: ["A. Knowledge", "B. Information", "C. Data", "D. Wisdom"],
+                answer: "C. Data"
+            },
+            {
+                question: "15. Which management group focuses on monitoring, control, and semi-structured decisions?",
+                options: ["A. Senior Management", "B. Middle Management", "C. Operational Management", "D. Clerical Staff"],
+                answer: "B. Middle Management"
+            },
+            {
+                question: "16. In an integrated enterprise, a sale in CRM can automatically trigger a check in which system?",
+                options: ["A. ERP (Inventory)", "B. ESS (Strategy)", "C. TPS (Payroll)", "D. MIS (Marketing)"],
+                answer: "A. ERP (Inventory)"
+            },
+            {
+                question: "17. Information Systems are described as 'socio-technical' because they involve:",
+                options: ["A. Only Computers", "B. Only People", "C. Both Technology and People/Processes", "D. Only Software"],
+                answer: "C. Both Technology and People/Processes"
+            },
+            {
+                question: "18. Which type of problem is Senior Management most likely to deal with using an ESS?",
+                options: ["A. Routine transactions", "B. Unstructured, long-term planning", "C. Weekly scheduling", "D. Inventory tracking"],
+                answer: "B. Unstructured, long-term planning"
+            },
+            {
+                question: "19. In the context of the 5 components, 'Inventory counts' falls under:",
+                options: ["A. Hardware", "B. Data", "C. Software", "D. People"],
+                answer: "B. Data"
+            },
+            {
+                question: "20. The ultimate goal of using Information Systems in business is often to turn data into:",
+                options: ["A. More data", "B. Complex paperwork", "C. Competitive advantage", "D. Slower processes"],
+                answer: "C. Competitive advantage"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            isAnswered = false;
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-question-area').classList.remove('hidden');
+            document.getElementById('quiz-feedback').textContent = '';
+            document.getElementById('quiz-next-btn').disabled = true;
+            document.getElementById('quiz-next-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('quiz-next-btn').classList.remove('cursor-pointer');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const q = quizQuestions[currentQuestionIndex];
+            document.getElementById('quiz-q-number').textContent = `Question ${currentQuestionIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quiz-score').textContent = `Score: ${score}`;
+            document.getElementById('quiz-q-text').textContent = q.question;
+            document.getElementById('quiz-feedback').textContent = '';
+            
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+            isAnswered = false;
+
+            q.options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'option-button w-full text-left px-4 py-3 bg-white border border-gray-300 rounded-md focus:outline-none';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(btn, option, q.answer);
+                optionsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('quiz-next-btn').disabled = true;
+            document.getElementById('quiz-next-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('quiz-next-btn').classList.remove('cursor-pointer');
+        }
+
+        function checkAnswer(selectedButton, selectedOption, correctAnswer) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const buttons = document.getElementById('quiz-options-container').querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.add('disabled');
+                btn.onclick = null; // Disable further clicks
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct-answer');
+                }
+            });
+
+            const feedback = document.getElementById('quiz-feedback');
+            document.getElementById('quiz-next-btn').disabled = false;
+            document.getElementById('quiz-next-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('quiz-next-btn').classList.add('cursor-pointer');
+
+
+            if (selectedOption === correctAnswer) {
+                score++;
+                selectedButton.classList.remove('correct-answer'); // Already handled by the loop above, but ensure it's colored
+                selectedButton.classList.add('correct-answer');
+                feedback.textContent = 'Correct! Well done.';
+                feedback.classList.add('text-green-600');
+                feedback.classList.remove('text-red-600');
+            } else {
+                selectedButton.classList.add('incorrect-answer');
+                feedback.textContent = 'Incorrect. Review the material before retaking.';
+                feedback.classList.add('text-red-600');
+                feedback.classList.remove('text-green-600');
+            }
+            document.getElementById('quiz-score').textContent = `Score: ${score}`;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            document.getElementById('quiz-feedback').textContent = '';
+            
+            if (currentQuestionIndex < quizQuestions.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            document.getElementById('final-score').textContent = `${score} / ${quizQuestions.length}`;
+
+            const percentage = (score / quizQuestions.length) * 100;
+            let message = '';
+            if (percentage === 100) {
+                message = "Perfect score! You are an Information Systems expert!";
+            } else if (percentage >= 80) {
+                message = "Excellent work! You have a strong grasp of the core concepts.";
+            } else if (percentage >= 50) {
+                message = "Good effort! Review the sections you struggled with to improve.";
+            } else {
+                message = "Keep studying! Focus on the key components and management levels.";
+            }
+            document.getElementById('result-message').textContent = message;
+        }
+    </script>
+</body>
+</html>
