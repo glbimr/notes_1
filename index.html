@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -370,6 +372,65 @@
     </section>
 
     <!-- Section 5: Enterprise Applications (Interactive Flow) -->
+    <!-- NEW SECTION: Systems Modules (TPS, DSS, ESS, MIS) -->
+    <section id="systems-modules" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-gray-900">Systems Modules: TPS, DSS, ESS, MIS</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">Compact explanations of common information systems used at different management levels.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- TPS -->
+                <div class="bg-indigo-50 p-6 rounded-xl shadow border border-indigo-100">
+                    <h3 class="text-xl font-bold text-indigo-900">TPS (Transaction Processing System)</h3>
+                    <p class="mt-3 text-gray-700 text-sm">Handles and records the routine, day-to-day business transactions required to conduct business (sales, receipts, cash deposits, payroll).</p>
+                    <ul class="mt-3 text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li><strong>Purpose:</strong> Record transactions reliably and quickly.</li>
+                        <li><strong>Management Level:</strong> Operational</li>
+                        <li><strong>Examples:</strong> POS systems, Online order processing, Payroll</li>
+                    </ul>
+                </div>
+
+                <!-- DSS -->
+                <div class="bg-emerald-50 p-6 rounded-xl shadow border border-emerald-100">
+                    <h3 class="text-xl font-bold text-emerald-900">DSS (Decision Support System)</h3>
+                    <p class="mt-3 text-gray-700 text-sm">Supports semi-structured and unstructured decision-making by analyzing data models and scenarios, often with interactive tools and visualizations.</p>
+                    <ul class="mt-3 text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li><strong>Purpose:</strong> Analyze alternatives and model outcomes.</li>
+                        <li><strong>Management Level:</strong> Middle / Tactical</li>
+                        <li><strong>Examples:</strong> Price optimization tools, What-if analysis dashboards</li>
+                    </ul>
+                </div>
+
+                <!-- ESS -->
+                <div class="bg-purple-50 p-6 rounded-xl shadow border border-purple-100">
+                    <h3 class="text-xl font-bold text-purple-900">ESS (Executive Support System)</h3>
+                    <p class="mt-3 text-gray-700 text-sm">Provides senior executives with easy access to internal and external information relevant to strategic decisions, often via summarized dashboards and trend analysis.</p>
+                    <ul class="mt-3 text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li><strong>Purpose:</strong> Support long-term, unstructured strategic decisions.</li>
+                        <li><strong>Management Level:</strong> Senior / Strategic</li>
+                        <li><strong>Examples:</strong> Executive dashboards, External market trend feeds</li>
+                    </ul>
+                </div>
+
+                <!-- MIS -->
+                <div class="bg-blue-50 p-6 rounded-xl shadow border border-blue-100">
+                    <h3 class="text-xl font-bold text-blue-900">MIS (Management Information System)</h3>
+                    <p class="mt-3 text-gray-700 text-sm">Produces routine summary reports and exception reports to help monitor performance and support structured decision-making across the organization.</p>
+                    <ul class="mt-3 text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        <li><strong>Purpose:</strong> Provide scheduled and ad-hoc reports to managers.</li>
+                        <li><strong>Management Level:</strong> Middle / Tactical</li>
+                        <li><strong>Examples:</strong> Sales reports, Inventory summaries, Performance dashboards</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 text-sm text-gray-600">
+                <p><strong>How they fit together:</strong> TPS collects transaction data that feed MIS reports; DSS tools analyze MIS/TPS data to model decisions; ESS summarizes MIS/DSS outputs and external intelligence for executives.</p>
+            </div>
+        </div>
+    </section>
     <section id="enterprise-section" class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-12">
@@ -1004,5 +1065,43 @@
             document.getElementById('result-message').textContent = message;
         }
     </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
