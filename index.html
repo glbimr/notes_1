@@ -36,6 +36,9 @@
         }
         .connection-line { position: absolute; height: 3px; background: #374151; z-index: 1; top: 50%; transform: translateY(-50%); }
         .db-line { position: absolute; width: 3px; background: #374151; z-index: 1; left: 50%; transform: translateX(-50%); }
+
+        .comp-btn { transition: transform 0.2s; }
+        .comp-btn:hover { transform: scale(1.05); }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Corporate Blue (Slate-50 BG, Indigo-600 Action, Emerald-500 Success) -->
 </head>
@@ -46,7 +49,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-xl font-bold text-indigo-700">Unit-1<span class="text-gray-900"></span></span>
+                    <span class="text-xl font-bold text-indigo-700">Unit - 1<span class="text-gray-900">Hub</span></span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <button onclick="scrollToSection('dik-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Concepts</button>
@@ -265,7 +268,7 @@
         </div>
     </section>
 
-    <!-- Section 3: Components of IS (Chart.js) -->
+    <!-- Section 3: Components of IS (Buttons) -->
     <section id="components-section" class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -277,7 +280,6 @@
                     <p class="mt-4 text-gray-600">
                         An IS is a socio-technical system. It's not just computers; it's people and processes too.
                     </p>
-                    <p class="mt-4 text-sm font-semibold text-indigo-600">Click on the chart segments to explore each component.</p>
                     
                     <div id="component-detail" class="mt-8 p-6 bg-white rounded-lg shadow border border-gray-200">
                         <h3 class="text-xl font-bold text-gray-800" id="comp-title">Hardware</h3>
@@ -286,9 +288,39 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 flex items-center justify-center bg-white rounded-xl shadow p-4">
-                    <div class="chart-container">
-                        <canvas id="componentsChart"></canvas>
+                <div class="lg:col-span-2 flex flex-col items-center justify-center bg-white rounded-xl shadow p-8">
+                    <!-- MOVED LINE HERE for visibility -->
+                    <p class="mb-6 text-lg font-semibold text-indigo-600">Click on the buttons to explore each component.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+                        <!-- Hardware Button -->
+                        <button onclick="updateComponentDetail('Hardware')" class="comp-btn flex flex-col items-center justify-center p-6 bg-indigo-50 border-2 border-indigo-200 rounded-xl hover:bg-indigo-100 hover:border-indigo-400">
+                            <span class="text-4xl mb-3">🖥️</span>
+                            <span class="font-bold text-indigo-900">Hardware</span>
+                        </button>
+
+                        <!-- Software Button -->
+                        <button onclick="updateComponentDetail('Software')" class="comp-btn flex flex-col items-center justify-center p-6 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 hover:border-blue-400">
+                            <span class="text-4xl mb-3">💾</span>
+                            <span class="font-bold text-blue-900">Software</span>
+                        </button>
+
+                        <!-- Data Button -->
+                        <button onclick="updateComponentDetail('Data')" class="comp-btn flex flex-col items-center justify-center p-6 bg-emerald-50 border-2 border-emerald-200 rounded-xl hover:bg-emerald-100 hover:border-emerald-400">
+                            <span class="text-4xl mb-3">📊</span>
+                            <span class="font-bold text-emerald-900">Data</span>
+                        </button>
+
+                        <!-- Procedures Button -->
+                        <button onclick="updateComponentDetail('Procedures')" class="comp-btn flex flex-col items-center justify-center p-6 bg-amber-50 border-2 border-amber-200 rounded-xl hover:bg-amber-100 hover:border-amber-400">
+                            <span class="text-4xl mb-3">📋</span>
+                            <span class="font-bold text-amber-900">Procedures</span>
+                        </button>
+
+                        <!-- People Button -->
+                        <button onclick="updateComponentDetail('People')" class="comp-btn flex flex-col items-center justify-center p-6 bg-red-50 border-2 border-red-200 rounded-xl hover:bg-red-100 hover:border-red-400 md:col-span-1 col-span-2">
+                            <span class="text-4xl mb-3">👥</span>
+                            <span class="font-bold text-red-900">People</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -620,7 +652,7 @@
             btn3.classList.add('opacity-50', 'cursor-not-allowed');
         }
 
-        // --- Chart.js: Components ---
+        // --- Component Logic (Buttons) ---
         const componentData = {
             'Hardware': { desc: 'Physical equipment (Computers, Scanners, Servers).', ex: 'Example: The scanner used at the checkout.' },
             'Software': { desc: 'Programmed instructions that control hardware.', ex: 'Example: Windows OS, Excel, CRM Application.' },
@@ -631,60 +663,17 @@
 
         function resetComponentDetails() {
             // Manually set to initial state (Hardware)
-            document.getElementById('comp-title').innerText = 'Hardware';
-            document.getElementById('comp-desc').innerText = componentData['Hardware'].desc;
-            document.getElementById('comp-ex').innerText = componentData['Hardware'].ex;
+            updateComponentDetail('Hardware');
+        }
+        
+        function updateComponentDetail(key) {
+            const info = componentData[key];
+            document.getElementById('comp-title').innerText = key;
+            document.getElementById('comp-desc').innerText = info.desc;
+            document.getElementById('comp-ex').innerText = info.ex;
         }
 
-        let myChartInstance;
-
         document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('componentsChart').getContext('2d');
-            
-            myChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Hardware', 'Software', 'Data', 'Procedures', 'People'],
-                    datasets: [{
-                        data: [20, 20, 20, 20, 20],
-                        backgroundColor: [
-                            '#4F46E5', // Indigo
-                            '#3B82F6', // Blue
-                            '#10B981', // Emerald
-                            '#F59E0B', // Amber
-                            '#EF4444'  // Red
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label;
-                                }
-                            }
-                        }
-                    },
-                    onClick: (e, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const label = myChartInstance.data.labels[index];
-                            const info = componentData[label];
-                            
-                            document.getElementById('comp-title').innerText = label;
-                            document.getElementById('comp-desc').innerText = info.desc;
-                            document.getElementById('comp-ex').innerText = info.ex;
-                        }
-                    }
-                }
-            });
-
             // --- Plotly: Management Pyramid ---
             const funnelData = [{
                 type: 'funnel',
