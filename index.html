@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,6 +40,22 @@
 
         .comp-btn { transition: transform 0.2s; }
         .comp-btn:hover { transform: scale(1.05); }
+        /* Responsive adjustments for phones/tablets */
+        @media (max-width: 640px) {
+            .node-icon { font-size: 1.6rem; padding: 0.6rem; }
+            .node-icon.text-2xl { font-size: 1.4rem; padding: 0.75rem; }
+            .data-packet { width: 32px; height: 32px; font-size: 1rem; top: 40%; }
+            .connection-line { height: 2px; }
+            .db-line { width: 2px; }
+            .chart-container { height: 260px; }
+            .step-arrow::after { right: 50%; top: auto; bottom: -20px; transform: translateX(50%); content: '↓'; }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .node-icon { font-size: 2rem; padding: 1rem; }
+            .data-packet { width: 36px; height: 36px; font-size: 1.1rem; top: 36%; }
+            .chart-container { height: 340px; }
+        }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Corporate Blue (Slate-50 BG, Indigo-600 Action, Emerald-500 Success) -->
 </head>
@@ -53,6 +68,14 @@
                 <div class="flex items-center">
                     <span class="text-xl font-bold text-indigo-700">Unit - 1<span class="text-gray-900"></span></span>
                 </div>
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-button" aria-expanded="false" class="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <button onclick="scrollToSection('dik-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Concepts</button>
                     <button onclick="scrollToSection('components-section')" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition">Components</button>
@@ -61,6 +84,16 @@
                     <!-- NEW QUIZ NAVIGATION LINK -->
                     <button onclick="scrollToSection('quiz-section')" class="text-sm font-medium text-gray-700 hover:text-green-600 transition font-bold">Quiz</button>
                 </div>
+            </div>
+        </div>
+        <!-- Mobile menu (hidden by default) -->
+        <div id="mobile-menu" class="md:hidden hidden border-t border-gray-100">
+            <div class="px-4 py-3 space-y-1">
+                <button onclick="scrollToSection('dik-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Concepts</button>
+                <button onclick="scrollToSection('components-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Components</button>
+                <button onclick="scrollToSection('management-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Management</button>
+                <button onclick="scrollToSection('enterprise-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Enterprise</button>
+                <button onclick="scrollToSection('quiz-section'); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-2 rounded-md text-indigo-700 font-bold hover:bg-gray-50">Quiz</button>
             </div>
         </div>
     </nav>
@@ -198,7 +231,7 @@
                 </div>
 
                 <!-- Visual Pipeline Stage -->
-                <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 relative h-[450px] overflow-hidden flex flex-col shadow-2xl">
+                <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 relative h-[380px] sm:h-[420px] lg:h-[450px] overflow-hidden flex flex-col shadow-2xl">
                     <div class="absolute top-4 right-4 text-slate-500 text-xs font-mono">SYSTEM_VISUALIZER_v2.0</div>
                     
                     <!-- Data Packet -->
@@ -276,7 +309,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-3xl font-extrabold text-gray-900">3. Components of Information Systems</h2>
+                        <h2 class="text-3xl font-extrabold text-gray-900">3. The 5 Components</h2>
                         <button onclick="resetComponentDetails()" class="px-5 py-2 text-sm bg-gray-300 rounded-md hover:bg-gray-400 transition font-semibold">Reset View</button>
                     </div>
                     <p class="mt-4 text-gray-600">
@@ -341,8 +374,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Plotly Chart -->
-                <div class="bg-gray-50 rounded-xl p-4 shadow-inner">
-                    <div id="managementPyramid" style="width:100%; height:400px;"></div>
+                <div class="bg-gray-50 rounded-xl p-4 shadow-inner h-64 md:h-96">
+                    <div id="managementPyramid" style="width:100%; height:100%;"></div>
                 </div>
 
                 <!-- Contextual Details -->
@@ -1065,43 +1098,6 @@
             document.getElementById('result-message').textContent = message;
         }
     </script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 </body>
 </html>
+
