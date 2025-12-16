@@ -56,10 +56,13 @@
             .data-packet { width: 36px; height: 36px; font-size: 1.1rem; top: 36%; }
             .chart-container { height: 340px; }
         }
+        /* Wrapper for forced-desktop scaling (auto-fit on small viewports) */
+        #desktop-wrapper { width: 1200px; max-width: 1200px; margin: 0 auto; transition: transform 150ms ease; }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Corporate Blue (Slate-50 BG, Indigo-600 Action, Emerald-500 Success) -->
 </head>
 <body class="antialiased">
+    <div id="desktop-wrapper">
 
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
@@ -1097,7 +1100,44 @@
             }
             document.getElementById('result-message').textContent = message;
         }
-    </script>
+        
+        // --- Forced Desktop Auto-Fit (Scale Desktop Layout on Small Screens) ---
+        (function(){
+            const DESKTOP_WIDTH = 1200; // px - target desktop layout width for desktop layout
+
+            function applyDesktopScale(){
+                const wrapper = document.getElementById('desktop-wrapper');
+                if(!wrapper) return;
+
+                const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                const scale = Math.max(Math.min(vw / DESKTOP_WIDTH, 1), 0.35); // clamp scale between 0.35 and 1
+
+                wrapper.style.transform = `scale(${scale})`;
+                wrapper.style.transformOrigin = 'top center';
+                wrapper.style.width = DESKTOP_WIDTH + 'px';
+
+                // Avoid horizontal scrolling when scaled
+                document.documentElement.style.overflowX = 'hidden';
+                document.body.style.overflowX = 'hidden';
+            }
+
+            window.addEventListener('resize', applyDesktopScale);
+            document.addEventListener('DOMContentLoaded', function(){
+                applyDesktopScale();
+
+                // Mobile menu toggle wiring (hamburger)
+                const mobileBtn = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if(mobileBtn && mobileMenu){
+                    mobileBtn.addEventListener('click', function(){
+                        const expanded = mobileBtn.getAttribute('aria-expanded') === 'true';
+                        mobileBtn.setAttribute('aria-expanded', String(!expanded));
+                        mobileMenu.classList.toggle('hidden');
+                    });
+                }
+            });
+        })();
+</script>
+    </div>
 </body>
 </html>
-
